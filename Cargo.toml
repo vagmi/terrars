@@ -7,6 +7,9 @@ license = "ISC"
 readme = "readme.md"
 repository = "https://github.com/andrewbaxter/terrars"
 
+[lib]
+doctest = false
+
 [dependencies]
 aargvark = { version = "0.3", features = ["serde_json"] }
 cargo_toml = "0.20"

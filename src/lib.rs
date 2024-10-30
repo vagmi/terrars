@@ -1,4 +1,4 @@
-#![doc= include_str !("../readme.md")]
+#![doc=include_str!("../readme.md")]
 
 use std::{
     cell::{
@@ -277,14 +277,14 @@ impl Stack {
         fs::write(&path.join("stack.tf.json"), &self.serialize(&PathBuf::from_str(state_name).unwrap())?)?;
         let state_path = path.join(state_name);
         if !state_path.exists() {
-            let mut command = Command::new("terraform");
+            let mut command = Command::new(get_terraform_binary());
             command.current_dir(&path).arg("init");
             let res = command.status()?;
             if !res.success() {
                 return Err(RunError::CommandError(command, res));
             }
         }
-        let mut command = Command::new("terraform");
+        let mut command = Command::new(get_terraform_binary());
         command.current_dir(&path).arg(mode);
         if let Some(vars) = variables {
             let mut vars_file = tempfile::Builder::new().suffix(".json").tempfile()?;
@@ -307,7 +307,7 @@ impl Stack {
     /// which the .tf.json file was written. The output struct must be a single level
     /// and only have primitive values (i64, f64, String, bool).
     pub fn get_output<O: DeserializeOwned>(&self, path: &Path) -> Result<O, RunError> {
-        let mut command = Command::new("terraform");
+        let mut command = Command::new(get_terraform_binary());
         let res = command.current_dir(&path).stderr(Stdio::inherit()).args(&["output", "-json"]).output()?;
         if !res.status.success() {
             return Err(RunError::CommandError(command, res.status));

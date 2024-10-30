@@ -22,6 +22,7 @@ use serde::{
     Deserialize,
 };
 use serde_json::json;
+use terrars::get_terraform_binary;
 use std::{
     collections::HashSet,
     fs::{
@@ -118,13 +119,13 @@ fn main() {
                     }
                 }
             })).unwrap()).context("Failed to write bootstrap terraform code for provider schema extraction")?;
-            Command::new("terraform")
+            Command::new(get_terraform_binary())
                 .args(&["init", "-no-color"])
                 .current_dir(&dir)
                 .run()
                 .context("Error initializing terraform in export dir")?;
             let schema_raw =
-                Command::new("terraform")
+                Command::new(get_terraform_binary())
                     .args(&["providers", "schema", "-json", "-no-color"])
                     .current_dir(&dir)
                     .output()

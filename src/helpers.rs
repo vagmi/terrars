@@ -41,3 +41,13 @@ pub fn tf_trim_prefix(
 ) -> PrimExpr<String> {
     return stack.func("trimprefix").a(original).a(prefix).into();
 }
+
+
+/// Gets the path to the Terraform / OpenTofu binary.
+pub fn get_terraform_binary() -> String {
+    if let Ok(path) = std::env::var("TF_BINARY") {
+        return path;
+    }
+    "terraform".to_string()
+}
+
